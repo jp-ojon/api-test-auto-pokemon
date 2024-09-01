@@ -1,16 +1,14 @@
 package api.endpoints;
 
-import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
+import io.restassured.response.Response;
 
 public class EndPoints {
 	//contains only the CRUD methods implementation
 	
 	/**
-	 * This method would send a get request with parameters by Country, City and State
-	 * @param country 
-	 * @param state
-	 * @param city
+	 * This method would send a get request with parameters by pokemon
+	 * @param pokemon 
 	 * @return response
 	 */
 	public static Response getPokemon(String pokemon) {

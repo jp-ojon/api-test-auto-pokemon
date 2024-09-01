@@ -1,63 +1,60 @@
 package api.tests;
 
-import org.testng.*;
-import org.testng.annotations.*;
-import api.endpoints.EndPoints;
-import io.restassured.path.json.JsonPath;
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
 import java.util.List;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
+import api.endpoints.EndPoints;
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
 
 public class ApiTests {
 
-	// Declare variables with common usage
-	Response response;
-	int statusCode;
-	String contentType;
-	String country;
-	String state;
-	long responseTime;
-	boolean placeFound;
+    // Declare variables with common usage
+    Response response;
+    int statusCode;
+    String contentType;
 
-	@Test(priority = 1, description = "Pikachu Test")
-	public void testPikachu() {
+    @Test(priority = 1, description = "Pikachu Test")
+    public void testPikachu() {
 
-		// Perform get request and store the response
-		response = EndPoints.getPokemon("pikachu");
+        // Perform get request and store the response
+        response = EndPoints.getPokemon("pikachu");
 
-		// Verify the response status code. Status code is 200
-		statusCode = response.getStatusCode();
-		System.out.println("Status code: " + statusCode);
-		Assert.assertEquals(statusCode, 200, "Status code should be 200");
+        // Verify the response status code. Status code is 200
+        statusCode = response.getStatusCode();
+        System.out.println("Status code: " + statusCode);
+        Assert.assertEquals(statusCode, 200, "Status code should be 200");
 
-		// Verify the response content type. Content type is JSON
-		contentType = response.getContentType();
-		System.out.println("Content type: " + contentType);
-		Assert.assertTrue(contentType.contains("application/json"), "Content type should be JSON");
+        // Verify the response content type. Content type is JSON
+        contentType = response.getContentType();
+        System.out.println("Content type: " + contentType);
+        Assert.assertTrue(contentType.contains("application/json"), "Content type should be JSON");
 
-		// Extract JsonPath from the response
-		JsonPath jsonPath = response.jsonPath();
+        // Extract JsonPath from the response
+        JsonPath jsonPath = response.jsonPath();
 
-		// Get the list of ability names
-		List<String> abilityNames = jsonPath.getList("abilities.ability.name");
-		System.out.println("Abilities: "+ abilityNames);
+        // Get the list of ability names from the jsonpath response
+        List<String> abilityNames = jsonPath.getList("abilities.ability.name");
+        System.out.println("Abilities: " + abilityNames);
 
 		// Assert that 'lightning-rod' is one of the abilities
-		assertThat(abilityNames, hasItem("lightning-rod"));
-	}
+        Assert.assertTrue(abilityNames.contains("lightning-rod"), "'lightning-rod' should be one of the abilities");
+    }
 
-	@Test(priority = 2, description = "Charmander 404 Test")
-	public void testCharmander404() {
-		
+    @Test(priority = 2, description = "Charmander 404 Test")
+    public void testCharmander404() {
+
         // Start WireMock server
         WireMockServer wireMockServer = new WireMockServer(WireMockConfiguration.wireMockConfig().port(8080));
         wireMockServer.start();
@@ -70,8 +67,8 @@ public class ApiTests {
                         .withBody("Resource Not Found")));
 
         // Make a request to the mocked endpoint using RestAssured
-        Response response = RestAssured.get("http://localhost:8080/pokemon/charmander");
-        
+        response = RestAssured.get("http://localhost:8080/pokemon/charmander");
+
         // Print response details
         System.out.println("Response Status Code: " + response.getStatusCode());
         System.out.println("Response Body: " + response.getBody().asString());
@@ -83,6 +80,6 @@ public class ApiTests {
         // Stop WireMock server
         wireMockServer.stop();
 
-	}
+    }
 
 }

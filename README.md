@@ -16,7 +16,8 @@ Jon Paulo Ojon
 - change directory to root folder api-test-auto-pokemon
 
 ## Test Cases
-- Test Case 1: Test Order ESIMs And Verify Details. Submit an order and verify details on the ESIMs list and ESIMs package history.
+- Test Case 1: Test Get Request on Poke API
+- Test Case 2: Test Get Request on Mock Poke API, modify the response to return status 404.
 
 ## Project Structure
 - src/test/java: Contains the test code.
